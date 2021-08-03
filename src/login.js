@@ -4,12 +4,12 @@ const express = require('express')
 const router = express.Router()
 
 module.exports = () => {
-  const router = new SignUpRouter()
-  router.post('/signup', ExpressRouterAdapter.adapt(router))
+  const route = new SignUpRouter()
+  router.post('/signup', ExpressRouterAdapter.adapt(route))
 }
 
 class ExpressRouterAdapter {
-  static adapt (router) {
+  static adapt(router) {
     return async (req, res) => {
       const httpRequest = {
         body: req.body
@@ -24,7 +24,7 @@ class ExpressRouterAdapter {
 
 // Presentation
 class SignUpRouter {
-  async route (httpRequest) {
+  async route(httpRequest) {
     const { email, password, repeatPassword } = httpRequest.body
     const user = new SignUpUseCase().signUp(email, password, repeatPassword)
 
@@ -38,7 +38,7 @@ class SignUpRouter {
 // Domain
 // SignUp use case
 class SignUpUseCase {
-  async signUp (email, password, repeatPassword) {
+  async signUp(email, password, repeatPassword) {
     if (password === repeatPassword) {
       new AddAccountRepository().add(email, password)
     }
@@ -51,7 +51,7 @@ const mongoose = require('mongoose')
 const AccountModel = mongoose.model('Account')
 
 class AddAccountRepository {
-  async add (email, password) {
+  async add(email, password) {
     const user = await AccountModel.create({ email, password })
     return user
   }
