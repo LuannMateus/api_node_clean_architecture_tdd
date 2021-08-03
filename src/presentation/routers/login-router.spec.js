@@ -4,7 +4,7 @@ const UnauthorizedError = require('../helpers/unauthorized-error')
 
 const makeSut = () => {
   class AuthUseCaseSpy {
-    auth(email, password) {
+    auth (email, password) {
       this.email = email
       this.password = password
     }
@@ -18,7 +18,6 @@ const makeSut = () => {
     sut,
     authUseCaseSpy
   }
-
 }
 
 describe('Login Router', () => {
@@ -36,11 +35,11 @@ describe('Login Router', () => {
   })
 
   test('Should return 400 if no password is provided', () => {
-    const { sut }  = makeSut()
+    const { sut } = makeSut()
 
     const httpRequest = {
       body: {
-        email: 'any_email@mail.com',
+        email: 'any_email@mail.com'
       }
     }
     const httpResponse = sut.route(httpRequest)
@@ -58,7 +57,7 @@ describe('Login Router', () => {
   })
 
   test('Should call AuthUseCase with correct params', () => {
-    const { sut, authUseCaseSpy }  = makeSut()
+    const { sut, authUseCaseSpy } = makeSut()
 
     const httpRequest = {
       body: {
@@ -73,7 +72,7 @@ describe('Login Router', () => {
   })
 
   test('Should return 401 when invalid credentials are provided', () => {
-    const { sut }  = makeSut()
+    const { sut } = makeSut()
 
     const httpRequest = {
       body: {
@@ -84,8 +83,35 @@ describe('Login Router', () => {
 
     const httpResponse = sut.route(httpRequest)
     expect(httpResponse.body).toEqual(new UnauthorizedError())
-  
   })
 
-})
+  test('Should return 500 if no AuthUseCase is provided', () => {
+    const sut = new LoginRouter()
 
+    const httpRequest = {
+      body: {
+        email: 'any_email@mail.com',
+        password: 'any_password'
+      }
+    }
+
+    const httpResponse = sut.route(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(500)
+  })
+
+  test('Should return 500 if AuthUseCase has no auth method', () => {
+    const sut = new LoginRouter({})
+
+    const httpRequest = {
+      body: {
+        email: 'any_email@mail.com',
+        password: 'any_password'
+      }
+    }
+
+    const httpResponse = sut.route(httpRequest)
+
+    expect(httpResponse.statusCode).toBe(500)
+  })
+})
