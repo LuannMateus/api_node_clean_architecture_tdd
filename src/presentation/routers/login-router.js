@@ -13,7 +13,6 @@ class LoginRouter {
       const { email, password } = httpRequest.body
 
       if (!email) {
-        const MissingParamError = require('../helpers/unauthorized-error')
         return HttpResponse.badRequest(new MissingParamError('email'))
       }
 
