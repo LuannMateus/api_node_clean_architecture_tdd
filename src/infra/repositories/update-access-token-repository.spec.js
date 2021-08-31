@@ -1,6 +1,7 @@
 const MongoHelper = require('../helpers/mongo-helper')
 const UpdateAccessTokenRepository = require('./update-access-token-repository')
 const { MissingParamError } = require('../../utils/errors/index')
+
 let db
 
 const makeSut = () => {
@@ -14,6 +15,8 @@ const makeSut = () => {
 }
 
 describe('UpdateAccessToken Repository', () => {
+  let fakeUserId
+
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
 
@@ -21,7 +24,17 @@ describe('UpdateAccessToken Repository', () => {
   })
 
   beforeEach(async () => {
-    await db.collection('users').deleteMany()
+    const userModel = db.collection('users')
+    await userModel.deleteMany()
+
+    const userInserted = await userModel.insertOne({
+      email: 'valid_email@mail.com',
+      name: 'any_name',
+      age: 50,
+      state: 'any_state',
+      password: 'hashed_password'
+    })
+    fakeUserId = userInserted.insertedId
   })
 
   afterAll(async () => {
@@ -30,48 +43,25 @@ describe('UpdateAccessToken Repository', () => {
 
   test('Should update the user with the given accessToken', async () => {
     const { sut, userModel } = makeSut()
-    const userInserted = await userModel.insertOne({
-      email: 'valid_email@mail.com',
-      name: 'any_name',
-      age: 50,
-      state: 'any_state',
-      password: 'hashed_password'
-    })
-    await sut.update(userInserted.insertedId, 'valid_token')
 
-    const updatedFakeUser = await userModel.findOne({ _id: userInserted.insertedId })
+    await sut.update(fakeUserId, 'valid_token')
+
+    const updatedFakeUser = await userModel.findOne({ _id: fakeUserId })
 
     expect(updatedFakeUser.accessToken).toBe('valid_token')
   })
 
   test('Should throw if no userModel is provided', async () => {
     const sut = new UpdateAccessTokenRepository()
-    const userModel = db.collection('users')
 
-    const userInserted = await userModel.insertOne({
-      email: 'valid_email@mail.com',
-      name: 'any_name',
-      age: 50,
-      state: 'any_state',
-      password: 'hashed_password'
-    })
-
-    const promise = sut.update(userInserted.insertedId, 'valid_token')
+    const promise = sut.update(fakeUserId, 'valid_token')
     expect(promise).rejects.toThrow()
   })
 
   test('Should throw if no params are provided', async () => {
-    const { sut, userModel } = makeSut()
-
-    const userInserted = await userModel.insertOne({
-      email: 'valid_email@mail.com',
-      name: 'any_name',
-      age: 50,
-      state: 'any_state',
-      password: 'hashed_password'
-    })
+    const { sut } = makeSut()
 
     expect(sut.update()).rejects.toThrow(new MissingParamError('userId'))
-    expect(sut.update(userInserted.insertedId)).rejects.toThrow(new MissingParamError('accessToken'))
+    expect(sut.update(fakeUserId)).rejects.toThrow(new MissingParamError('accessToken'))
   })
 })
