@@ -14,9 +14,12 @@ module.exports = {
   },
   async disconnect () {
     await this.client.close()
+
+    this.client = null
+    this.db = null
   },
   async getDb () {
-    if (!this.client.topology.isConnected()) {
+    if (!this.client || !this.client.topology.isConnected()) {
       await this.connect(this.uri, this.dbName)
     }
 
