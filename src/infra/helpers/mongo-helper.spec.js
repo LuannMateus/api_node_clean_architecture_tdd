@@ -15,7 +15,7 @@ describe('Mongo Helper ', () => {
     await sut.disconnect()
     expect(sut.db).toBeFalsy()
 
-    await sut.getDb()
+    await sut.getCollection('users')
     expect(sut.db).toBeTruthy()
   })
 })
