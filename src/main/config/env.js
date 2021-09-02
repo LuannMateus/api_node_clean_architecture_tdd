@@ -1,3 +1,4 @@
 module.exports = {
-  mongoUrl: 'mongodb://localhost:27017/node'
+  mongoUrl: process.env.MONGO_URL || 'mongodb://localhost:27017/node',
+  tokenSecret: process.env.TOKEN_SECRET || 'secret'
 }
