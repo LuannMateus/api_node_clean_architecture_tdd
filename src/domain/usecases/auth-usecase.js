@@ -1,6 +1,6 @@
 const { MissingParamError } = require('../../utils/errors')
 
-class AuthUseCase {
+module.exports = class AuthUseCase {
   constructor ({ loadUserByEmailRepository, updateAccessTokenRepository, encrypter, tokenGenerator } = {}) {
     this.loadUserByEmailRepository = loadUserByEmailRepository
     this.updateAccessTokenRepository = updateAccessTokenRepository
@@ -31,5 +31,3 @@ class AuthUseCase {
     return null
   }
 }
-
-module.exports = AuthUseCase

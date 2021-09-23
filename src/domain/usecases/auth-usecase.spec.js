@@ -11,9 +11,7 @@ const makeEncrypter = () => {
   }
 
   const encrypterSpy = new EncrypterSpy()
-
   encrypterSpy.isValid = true
-
   return encrypterSpy
 }
 
@@ -38,7 +36,6 @@ const makeTokenGenerator = () => {
 
   const tokenGeneratorSpy = new TokenGeneratorSpy()
   tokenGeneratorSpy.accessToken = 'any_token'
-  tokenGeneratorSpy.userId = 'any_id'
 
   return tokenGeneratorSpy
 }
