@@ -7,6 +7,6 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
-  collectCoverageFrom: ['**/src/**/*.js', '!**/src/main/**'],
+  collectCoverageFrom: ['**/src/**/*.js', '!**/src/main/**', '!**/src/login.js'],
   preset: '@shelf/jest-mongodb'
 }

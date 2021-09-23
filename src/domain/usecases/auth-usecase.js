@@ -22,8 +22,9 @@ class AuthUseCase {
     const isValid = user && await this.encrypter.compare(password, user.password)
 
     if (isValid) {
-      const accessToken = await this.tokenGenerator.generate(user.id)
-      await this.updateAccessTokenRepository.update(user.id, accessToken)
+      const accessToken = await this.tokenGenerator.generate(user._id)
+
+      await this.updateAccessTokenRepository.update(user._id, accessToken)
       return accessToken
     }
 

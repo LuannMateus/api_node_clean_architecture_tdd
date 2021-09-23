@@ -37,6 +37,8 @@ const makeTokenGenerator = () => {
   }
 
   const tokenGeneratorSpy = new TokenGeneratorSpy()
+  tokenGeneratorSpy.accessToken = 'any_token'
+  tokenGeneratorSpy.userId = 'any_id'
 
   return tokenGeneratorSpy
 }
@@ -109,8 +111,6 @@ const makeSut = () => {
   const tokenGeneratorSpy = makeTokenGenerator()
 
   const updateAccessTokenRepositorySpy = makeUpdateAccessTokenRepository()
-
-  tokenGeneratorSpy.accessToken = 'any_token'
 
   const sut = new AuthUseCase(
     {
@@ -188,7 +188,7 @@ describe('Auth UseCase', () => {
 
     await sut.auth('valid_email@mail.com', 'valid_password')
 
-    expect(tokenGeneratorSpy.userId).toBe(loadUserByEmailRepositorySpy.user.id)
+    expect(tokenGeneratorSpy.userId).toBe(loadUserByEmailRepositorySpy.user._id)
   })
 
   test('Should return an accessToken if correct credentials are provided', async () => {
@@ -210,7 +210,7 @@ describe('Auth UseCase', () => {
 
     await sut.auth('valid_email@mail.com', 'valid_password')
 
-    expect(updateAccessTokenRepositorySpy.userId).toBe(loadUserByEmailRepositorySpy.user.id)
+    expect(updateAccessTokenRepositorySpy.userId).toBe(loadUserByEmailRepositorySpy.user._id)
     expect(updateAccessTokenRepositorySpy.accessToken).toBe(tokenGeneratorSpy.accessToken)
   })
 
@@ -273,6 +273,7 @@ describe('Auth UseCase', () => {
       }),
       new AuthUseCase({
         loadUserByEmailRepository,
+        tokenGenerator,
         encrypter: makeEncrypterWithError()
       }),
       new AuthUseCase({
