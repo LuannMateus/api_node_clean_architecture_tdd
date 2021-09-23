@@ -7,6 +7,7 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
-  collectCoverageFrom: ['**/src/**/*.js', '!**/src/main/**', '!**/src/login.js'],
+  watchPathIgnorePatterns: ['./.docker'],
+  collectCoverageFrom: ['**/src/**/*.js', '!**/src/main/**', '!**/src/login.js', '!**/.docker/**/mongoData'],
   preset: '@shelf/jest-mongodb'
 }

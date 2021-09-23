@@ -17,6 +17,7 @@ module.exports = {
     this.client = null
     this.db = null
   },
+
   async getCollection (name) {
     if (!this.client || !this.client.topology.isConnected()) {
       await this.connect(this.uri)
